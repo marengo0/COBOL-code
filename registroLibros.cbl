@@ -371,9 +371,7 @@
                                                WITH REVERSE-VIDEO
                ACCEPT OPC AT LINE 10 COL 35
            END-IF.
-      *     display FS-REGISTRO-LIBROS at line 1 col 1  with
-      *     reverse-video.
-      *         accept opc at line 10 col 1.
+
            PERFORM CERRAR-ARCHIVO.
 
        BUSCAR-NOMBRE.
@@ -471,10 +469,10 @@
 
                PERFORM VARYING N FROM 05 BY 1 UNTIL FIN-REG OR
                                                EDITORIAL > AUX-EDIT
-      *                            READ REG-LIBROS NEXT RECORD "OBSERVACION", probar con dos o mas editoriales iguales
                    DISPLAY DATOS-LIBRO AT LINE N  COL 1
                    READ REG-LIBROS NEXT RECORD END-READ
                END-PERFORM
+
                ADD 1 TO N
                DISPLAY LIMPIAR-LINEA AT LINE 10 COL 1
                DISPLAY
@@ -484,10 +482,7 @@
                ACCEPT OPC AT LINE N COL 35
            END-IF.
            PERFORM CERRAR-ARCHIVO.
-      *OBSERVACION DE PRUEBA: NEXT RECORD PASA AL SIGUIENTE REGISTRO ACTUALIZANDO EL BUFFER CON EL REGISTRO QUE SUCEDIO
-      *LUEGO CON DISPLAY ANTES DEL SIGUIENTE READ, MUESTRA EL CONTENIDO DEL BUFFER Y LUEGO LEE EL SIGUIENTE REGISTRO Y EL BUFFER SE ACTUALIZA
-      *CON EL REGISTRO QUE NUEVAMENTE SUCEDIO.
-      *************************************************************************
+
        LIMPIAR-PANTALLA.
            PERFORM VARYING N FROM 01 BY 1 UNTIL N>24
                DISPLAY LIMPIAR AT LINE N COLUMN 1
@@ -501,38 +496,3 @@
 
        CERRAR-ARCHIVO.
            CLOSE REG-LIBROS.
-
-
-      *ERRORES SOLUCIONADOS:
-      ******************************************************************************************************************************************************
-      *-OPCION 3 FUNCIONA MAL AL USAR FILE-STATUS
-      *Aparentemente errores de recorrido de archivo
-      ******************************************************************************************************************************************************
-      *-LOOP INFINITO AL EJECUTAR OPCION 3 LUEGO DE CREAR ARCHIVO
-      *el error era a causa de no haber cerrado el archivo en CREAR-ARCHIVO luego de haberlo abierto
-      *haciendo que al entrar a la opcion 3 abriese nuevamente en modo I-O un archivo ya abierto
-      *rompiendo el programa y generando un error de salida tipo 12.CERRAR SIEMPRE ARCHIVOS.
-      ******************************************************************************************************************************************************
-      *-NO ACUMULABA LOS DATOS INGRESADOS
-      *era a causa de abrir el buffer como output en vez de i-o, open output elimina o sobreescribe el archivo
-      *siempre que se trabaja con indexados para abrir el buffer es correcto utilizar OPEN I-O.
-      ******************************************************************************************************************************************************
-      *-DELETE STATEMENT no eliminaba
-      *No habia abierto el archivo en modo I-O, usar un START y READ  siempre antes de usar DELETE
-      ******************************************************************************************************************************************************
-      *-ERROR DE LECTURA CON SECONDARY KEY
-      *Recorria un archivo que fue declarado de una manera diferente al codigo mas actual, es decir
-      *las claves secundarias no fueron declaradas cuando el archivo se creo y al intentar utilizar
-      *esas llaves el compilador no las reconocia por lo tanto monstraba datos erroneos.
-      *Se solucionó creando un nuevo archivo con las nuevas propiedades establecidas.
-      ******************************************************************************************************************************************************
-      *-ERRORES DE LECTURA AL USAR LAS KEY SECUNDARIAS
-      *Parece ser que a menos que quiera recorrer de manera secuencial sease para buscar duplicas o recorrer un archivo de principio a fin,
-      *por ejemplo, para mostrar un catalogo completo de libros etc.., no debo utilizar el comando START si busco un archivo especifico que
-      *NO ESTA DUPLICADO con utilizar READ.....KEY IS secondary-key el programa lee correctamente y distingue entre registros existentes y no existentes
-      *utilizando el FILE-STATUS para consultar su estado actual.
-      *Se probó registrar un libro con el mismo nombre para duplicarlo pero no fue registrado claramente porque NOMBRE no esta declarada con WITH DUPLICATES
-      *******************************************************************************************************************************************************
-      *SE ROMPIA EL PROGRAMA EN SECCION 5 AL VOLVER AL SUB-MENU Y LUEGO BUSCAR UN LIBRO
-      *Usaba perform para volver al submenu pero al retornar el control a la posicion de llamada intentaba leer el archivo estando cerrado, se soluciono
-      *ingresando un GO TO MENU seguido de recuperar el control
