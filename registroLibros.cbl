@@ -52,7 +52,6 @@
        77 AUX-ID               PIC 999.
        77 AUX-EDIT             PIC X(20).
        77 AUX-NOMBRE           PIC X(20).
-       77 EXISTE               PIC 9 VALUE 0.
 
        PROCEDURE DIVISION.
        DECLARATIVES.
@@ -189,6 +188,7 @@
            END-IF.
            PERFORM CERRAR-ARCHIVO.
 
+
        ELIMINAR-LIBRO.
            PERFORM LIMPIAR-PANTALLA.
            PERFORM ABRIR-IO-ARCHIVO.
@@ -268,6 +268,7 @@
                ACCEPT OPC AT LINE 1 COL 27
            END-IF.
 
+
        BUSCAR-LIBRO.
            PERFORM LIMPIAR-PANTALLA.
            IF NOT F-NOEXISTE-REG
@@ -300,6 +301,9 @@
                        DISPLAY "Ingrese opcion( )" AT LINE 7 COL 1
                                                    WITH REVERSE-VIDEO
                        ACCEPT BUSCAR-OPC           AT LINE 7 COL 16
+               IF BUSCAR-OPC EQUALS "i" MOVE "I" TO BUSCAR-OPC END-IF
+               IF BUSCAR-OPC EQUALS "n" MOVE "N" TO BUSCAR-OPC END-IF
+               IF BUSCAR-OPC EQUALS "e" MOVE "E" TO BUSCAR-OPC END-IF
                    END-PERFORM
                END-IF
                EVALUATE BUSCAR-OPC
@@ -337,7 +341,9 @@
                                                AT LINE 10 COL 1
                                                WITH REVERSE-VIDEO
            ACCEPT LIBRO-ID AT LINE 2 COL 13 WITH PROMPT UNDERLINE UPDATE.
+
            MOVE LIBRO-ID TO AUX-ID
+
            EVALUATE LIBRO-ID
            WHEN ZERO
            PERFORM CERRAR-ARCHIVO
@@ -469,10 +475,10 @@
 
                PERFORM VARYING N FROM 05 BY 1 UNTIL FIN-REG OR
                                                EDITORIAL > AUX-EDIT
+      *                            READ REG-LIBROS NEXT RECORD "OBSERVACION", probar con dos o mas editoriales iguales
                    DISPLAY DATOS-LIBRO AT LINE N  COL 1
                    READ REG-LIBROS NEXT RECORD END-READ
                END-PERFORM
-
                ADD 1 TO N
                DISPLAY LIMPIAR-LINEA AT LINE 10 COL 1
                DISPLAY
@@ -482,7 +488,10 @@
                ACCEPT OPC AT LINE N COL 35
            END-IF.
            PERFORM CERRAR-ARCHIVO.
-
+      *OBSERVACION DE PRUEBA: NEXT RECORD PASA AL SIGUIENTE REGISTRO ACTUALIZANDO EL BUFFER CON EL REGISTRO QUE SUCEDIO
+      *LUEGO CON DISPLAY ANTES DEL SIGUIENTE READ, MUESTRA EL CONTENIDO DEL BUFFER Y LUEGO LEE EL SIGUIENTE REGISTRO Y EL BUFFER SE ACTUALIZA
+      *CON EL REGISTRO QUE NUEVAMENTE SUCEDIO.
+      *************************************************************************
        LIMPIAR-PANTALLA.
            PERFORM VARYING N FROM 01 BY 1 UNTIL N>24
                DISPLAY LIMPIAR AT LINE N COLUMN 1
