@@ -475,7 +475,7 @@
 
                PERFORM VARYING N FROM 05 BY 1 UNTIL FIN-REG OR
                                                EDITORIAL > AUX-EDIT
-      *                            READ REG-LIBROS NEXT RECORD "OBSERVACION", probar con dos o mas editoriales iguales
+
                    DISPLAY DATOS-LIBRO AT LINE N  COL 1
                    READ REG-LIBROS NEXT RECORD END-READ
                END-PERFORM
@@ -488,9 +488,6 @@
                ACCEPT OPC AT LINE N COL 35
            END-IF.
            PERFORM CERRAR-ARCHIVO.
-      *OBSERVACION DE PRUEBA: NEXT RECORD PASA AL SIGUIENTE REGISTRO ACTUALIZANDO EL BUFFER CON EL REGISTRO QUE SUCEDIO
-      *LUEGO CON DISPLAY ANTES DEL SIGUIENTE READ, MUESTRA EL CONTENIDO DEL BUFFER Y LUEGO LEE EL SIGUIENTE REGISTRO Y EL BUFFER SE ACTUALIZA
-      *CON EL REGISTRO QUE NUEVAMENTE SUCEDIO.
       *************************************************************************
        LIMPIAR-PANTALLA.
            PERFORM VARYING N FROM 01 BY 1 UNTIL N>24
