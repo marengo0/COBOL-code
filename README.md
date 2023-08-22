@@ -1,2 +1,2 @@
 # COBOL-code
-Several programs written in cobol
+File matching program
